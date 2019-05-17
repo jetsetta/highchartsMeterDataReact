@@ -8,9 +8,17 @@ export class Chart extends React.Component {
   constructor(props){
     super(props)
 
+    // this function returns parsed and formatted data from the raw source
     function formatData() {
+
+      // this object will be populated with a structure that is more easy to use
+      // from a state management perspective
       let formattedDataObject = {}
+
+      // maps over each time series day object in the array
       jsonTimeSeriesData.forEach((userDataOnDate) => {
+
+        // if the meter ID exists on the object, dont add it, otherwise do
         if(!formattedDataObject[userDataOnDate.Meter_ID]) {
           formattedDataObject[userDataOnDate.Meter_ID] = {
             BaseLoad: [],
@@ -20,32 +28,46 @@ export class Chart extends React.Component {
         }
         else{
 
-          const datesArray = []
+          // converts the hours into epoch time and puts that into a tuple along with the load value for that epoch time
+          const hoursOfDayData = []
           let i = 1
           while(i < 24){
-            datesArray.push([new Date(userDataOnDate.Date).setHours(i), userDataOnDate[i]])
+            hoursOfDayData.push([new Date(userDataOnDate.Date).setHours(i), userDataOnDate[i]])
             i += 1
           }
 
-          formattedDataObject[userDataOnDate.Meter_ID][userDataOnDate.Type].push(datesArray)
+          // puts the array of epoch and value tuples for this day onto the type object for this meter type
+          formattedDataObject[userDataOnDate.Meter_ID][userDataOnDate.Type].push(hoursOfDayData)
         }
       })
 
+      // returns the structured time series data object
       return formattedDataObject
     }
 
+    // this will be popluated by storing all timeseries data into an array based on
+    // its meter type
     let meterDatesData = {
       BaseLoad: [],
       TSL: [],
       WSL: []
     }
+
+    // this calls the formatData function and the result is stored in the
+    // constant.
     const formatted = formatData()
+
+    // loops over every meter, and pushes the meter data into a master
+    // array that will be fed into highcharts
     for(let meterID in formatted){
       let meter = formatted[meterID]
       for(let meterType in meter){
         let meterData = meter[meterType]
         meterData.forEach((arrayOfMeterData)=>{
           arrayOfMeterData.forEach((dateAndValueTuple)=>{
+
+            // makes sure that only data that belongs to this meter is
+            // fed into high charts
             if(meterID === this.props.id){
               meterDatesData[meterType].push(dateAndValueTuple)
             }
@@ -54,6 +76,7 @@ export class Chart extends React.Component {
       }
     }
 
+    // configuration for highcharts
     this.config = {
       rangeSelector: {
           buttons: [{
@@ -124,6 +147,11 @@ export class Chart extends React.Component {
   }
 
   render() {
-    return (<div><Button onClick={()=>{this.props.backButtonClicked()}}>back</Button><ReactHighstock config={this.config} ref="chart"></ReactHighstock></div>)
+    return (
+      <div>
+        <Button onClick={()=>{this.props.backButtonClicked()}}>back</Button>
+        <ReactHighstock config={this.config} ref="chart">
+        </ReactHighstock>
+      </div>)
   }
 }
