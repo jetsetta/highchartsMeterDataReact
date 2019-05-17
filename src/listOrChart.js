@@ -23,7 +23,7 @@ export class ListOrChart extends React.Component {
   render(){
     return (
       <div>
-        {this.state.chartActive ? <Chart id={this.state.selectedId} backButtonClicked={this.backButtonClicked.bind(this)}/> : null}
+        {this.state.chartActive ? <Chart id={this.state.selectedId}backButtonClicked={this.backButtonClicked.bind(this)}/> : null}
         {this.state.listActive ? <List idSelected={this.idSelected.bind(this)}/> : null}
       </div>
     )

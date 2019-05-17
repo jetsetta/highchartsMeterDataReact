@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'reactstrap';
+import {Button} from 'reactstrap';
 
 const ReactHighstock = require('react-highcharts/ReactHighstock');
 const jsonTimeSeriesData = require('./Disagg.json')
@@ -78,6 +78,12 @@ export class Chart extends React.Component {
 
     // configuration for highcharts
     this.config = {
+      chart: {
+          type: 'spline'
+      },
+      title: {
+          text: 'User Load Consumption'
+      },
       rangeSelector: {
           buttons: [{
               type: 'day',
@@ -97,59 +103,45 @@ export class Chart extends React.Component {
               text: 'All'
           }],
           selected: 1,
-          inputEnabled: false
       },
 
       yAxis: {
-        labels: {
-            formatter: function () {
-                return this.value;
-            }
+        title: {
+            text: 'Load Consumed (kWh)'
         },
-        plotLines: [{
-            value: 0,
-            width: 2,
-            color: 'silver'
-        }]
       },
       tooltip: {
         pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
         valueDecimals: 2,
-        split: true
       },
+      colors: ['#F7BC45', '#7CB5EB', '#41754F'],
       series: [{
         name: 'Base',
         data: meterDatesData.BaseLoad,
-        tooltip: {
-          valueDecimals: 2
-        }
       },
       {
         name: 'Time Sensitive',
         data: meterDatesData.TSL,
-        tooltip: {
-          valueDecimals: 2
-        }
       },
       {
         name: 'Weather Sensitive',
         data: meterDatesData.WSL,
-        tooltip: {
-          valueDecimals: 2
-        }
       }]
     };
-
   }
 
   componentDidMount() {
     let chart = this.refs.chart.getChart();
   }
 
+  backButtonClicked(){
+    this.setState({chartActive: false, listActive: true, selectedId: ''})
+  }
+
   render() {
     return (
       <div>
-        <Button onClick={()=>{this.props.backButtonClicked()}}>back</Button>
+        <Button onClick={()=>{this.props.backButtonClicked()}}>Back</Button>
         <ReactHighstock config={this.config} ref="chart">
         </ReactHighstock>
       </div>)

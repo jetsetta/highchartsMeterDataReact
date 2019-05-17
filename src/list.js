@@ -1,5 +1,5 @@
 import React from 'react'
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import {ListGroup, ListGroupItem} from 'reactstrap';
 
 const jsonTimeSeriesData = require('./Disagg.json')
 
@@ -11,23 +11,22 @@ jsonTimeSeriesData.forEach((userDataOnDate) => {
   }
 })
 
-console.log(arrayOfIds)
-
 export class List extends React.Component {
   constructor(){
     super()
   }
   onIdSelect(id) {
-    console.log(id)
     this.props.idSelected(id)
   }
   render(){
-    return <ListGroup>
-      {arrayOfIds.map((id)=>{
-        return (<ListGroupItem onClick={()=>{ this.onIdSelect(id)}} key={id} tag="button" action>
-          {id}
-        </ListGroupItem>)
-      })}
-     </ListGroup>
+    return <div> <h2>User Meter ID</h2>
+      <ListGroup>
+        {arrayOfIds.map((id)=>{
+          return (<ListGroupItem onClick={()=>{ this.onIdSelect(id)}} key={id} tag="button" action>
+            {id}
+          </ListGroupItem>)
+        })}
+      </ListGroup>
+    </div>
   }
 }
