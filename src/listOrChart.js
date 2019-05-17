@@ -6,15 +6,25 @@ export class ListOrChart extends React.Component {
   constructor(){
     super()
     this.state = {
-      chartActive: true,
-      listActive: false
+      chartActive: false,
+      listActive: true,
+      selectedId: ''
     }
   }
+
+  idSelected(id) {
+    this.setState({chartActive: true, listActive: false, selectedId: id})
+  }
+
+  backButtonClicked(){
+    this.setState({chartActive: false, listActive: true, selectedId: ''})
+  }
+
   render(){
     return (
       <div>
-        {this.state.chartActive ? <Chart/> : null}
-        {this.state.listActive ? <List/> : null}
+        {this.state.chartActive ? <Chart id={this.state.selectedId} backButtonClicked={this.backButtonClicked.bind(this)}/> : null}
+        {this.state.listActive ? <List idSelected={this.idSelected.bind(this)}/> : null}
       </div>
     )
   }
